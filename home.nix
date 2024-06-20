@@ -78,15 +78,15 @@
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
+    settings = {
+      add_newline = false;
+    };
   };
 
   # Atuin
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;
-    settings = {
-      add_newline = false;
-    };
   };
 
   # MangoHud
@@ -117,6 +117,7 @@
       init.defaultBranch = "main";
     };
   };
+  programs.gh.enable = true;
 
   programs.lazygit = {
     enable = true;
