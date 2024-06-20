@@ -42,6 +42,20 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  # Virtualization
+  virtualisation.containers.enable = true;
+  virtualisation = {
+    podman = {
+      enable = true;
+
+      # Create a `docker` alias for podman, to use it as a drop-in replacement
+      dockerCompat = true;
+
+      # Required for containers under podman-compose to be able to talk to each other.
+      defaultNetwork.settings.dns_enabled = true;
+    };
+  };
+
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
@@ -109,14 +123,31 @@
   # Gaming
     gamemode
     protonup-qt
+    protontricks
     discord-screenaudio
   # VPN
     protonvpn-gui
     protonmail-desktop
-  # Shell
-    atuin
   # Extra
     spotify
+  # SteamTinkerLaunch Extra Requirements
+    unzip
+    unixtools.xxd
+    xorg.xwininfo
+    yad
+    wget
+    xdotool
+    unrar
+    wineWowPackages.stable
+    wineWowPackages.staging
+    winetricks
+    wineWowPackages.waylandFull
+  # Podman
+    dive
+    podman-tui
+    podman-compose
+  # Distrobox
+    distrobox
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -133,12 +164,14 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     gamescopeSession.enable = true;
+    # protontricks.enable = true;
     };
 
   hardware.opengl = {
     driSupport = true;
     driSupport32Bit = true;
   };
+
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
