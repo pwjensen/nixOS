@@ -1,53 +1,25 @@
 { config, pkgs, ... }:
 
 {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
   home.username = "paul";
   home.homeDirectory = "/home/paul";
   nixpkgs.config.allowUnfree = true;
-
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-
   ];
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
+  # Manages Dotfiles
   home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
   };
 
   home.sessionVariables = {
     # EDITOR = "emacs";
   };
 
-  # Programs
+  # Shell
 
   # Zsh
   programs.zsh = {
@@ -73,7 +45,6 @@
       ];
     };
   };
-
   # Starship
   programs.starship = {
     enable = true;
@@ -82,13 +53,13 @@
       add_newline = false;
     };
   };
-
   # Atuin
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;
   };
 
+  # Gaming
   # MangoHud
   programs.mangohud = {
     enable = true;
@@ -108,6 +79,7 @@
     };
   };
 
+  # Programming
   # Git
   programs.git = {
     enable = true;
@@ -118,12 +90,8 @@
     };
   };
   programs.gh.enable = true;
-
+  # Lazygit
   programs.lazygit = {
-    enable = true;
-  };
-
-  programs.fastfetch = {
     enable = true;
   };
 
@@ -132,6 +100,11 @@
     enable = true;
     viAlias = true;
     vimAlias = true;
+  };
+
+  # Extra
+  programs.fastfetch = {
+    enable = true;
   };
 
   # Let Home Manager install and manage itself.
