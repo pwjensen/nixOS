@@ -1,14 +1,13 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
     ];
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -17,14 +16,14 @@
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # Configure network proxy if necessary
+  # Network Proxy
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
+  # Networking
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
+  # Time Zone
   time.timeZone = "America/New_York";
 
   # Select internationalisation properties.
@@ -57,7 +56,6 @@
   };
 
   # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
@@ -82,15 +80,12 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+
+  # User Account
   users.users.paul = {
     isNormalUser = true;
     description = "paul";
@@ -101,23 +96,15 @@
     ];
   };
 
-  # Install firefox.
-  programs.firefox.enable = true;
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   # Shell
   environment.shells = with pkgs; [ zsh ];
   users.defaultUserShell = pkgs.zsh;
   programs.zsh.enable = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
   # School/Coding
     zoom-us
-    julia
+    julia_19
     python3
     git
   # Gaming
@@ -128,8 +115,6 @@
   # VPN
     protonvpn-gui
     protonmail-desktop
-  # Extra
-    spotify
   # SteamTinkerLaunch Extra Requirements
     unzip
     unixtools.xxd
@@ -146,17 +131,12 @@
     dive
     podman-tui
     podman-compose
+    podman-desktop
   # Distrobox
     distrobox
+  # Spotify
+    spotify
   ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
 
   # List services that you want to enable:
   programs.steam = {
@@ -172,7 +152,15 @@
     driSupport32Bit = true;
   };
 
+  # Install firefox.
+  programs.firefox.enable = true;
 
+  # Garbage Collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
@@ -182,12 +170,6 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.05"; # Did you read the comment?
 
   # Enable Flakes

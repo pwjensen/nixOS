@@ -5,6 +5,7 @@
   # manage.
   home.username = "paul";
   home.homeDirectory = "/home/paul";
+  nixpkgs.config.allowUnfree = true;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -18,7 +19,6 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -127,7 +127,12 @@
     enable = true;
   };
 
-
+  # Editor
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+  };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
