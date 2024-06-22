@@ -8,23 +8,41 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, ... } @ inputs:
     let
-      lib = nixpkgs.lib;
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      inherit (self) outputs;
+      systems = [
+        "aarch64-linux"
+        "x86_64-linux"
+        "i686-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
+      forAllSystems = nixpkgs.lib.genAttrs systems;
     in {
+      #packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+
+      # NixOS
       nixosConfigurations = {
-        nixos = lib.nixosSystem {
-          inherit system;
-          modules = [ ./configuration.nix ];
+        nixos = nixpkgs.lib.nixosSystem {
+          specialArgs = {inherit inputs outputs;};
+          modules = [
+            ./nixos/configuration.nix
+          ];
         };
       };
+
+      # Home-Manager (Standalone)
       homeConfigurations = {
         paul = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./home.nix ];
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = {inherit inputs outputs;};
+          modules = [
+            ./home-manager/home.nix
+          ];
         };
       };
     };
 }
+
