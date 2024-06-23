@@ -4,6 +4,7 @@
   imports =
     [
       ./hardware-configuration.nix
+      ../modules/home-manager/nixos/steam.nix
     ];
 
   # Allow unfree packages
@@ -92,7 +93,6 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       kdePackages.kate
-    #  thunderbird
     ];
   };
 
@@ -107,51 +107,19 @@
     julia_19
     python3
     git
-  # Gaming
-    gamemode
-    protonup-qt
-    protontricks
+  # Discord
     discord-screenaudio
   # VPN
     protonvpn-gui
     protonmail-desktop
-  # SteamTinkerLaunch Extra Requirements
-    unzip
-    unixtools.xxd
-    xorg.xwininfo
-    yad
-    wget
-    xdotool
-    unrar
-    wineWowPackages.stable
-    wineWowPackages.staging
-    winetricks
-    wineWowPackages.waylandFull
   # Podman
     dive
     podman-tui
     podman-compose
     podman-desktop
-  # Distrobox
-    distrobox
   # Spotify
     spotify
   ];
-
-  hardware.opengl = {
-    driSupport = true;
-    driSupport32Bit = true;
-  };
-
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    gamescopeSession.enable = true;
-  };
-
-  # Install firefox.
-  programs.firefox.enable = true;
 
   # Garbage Collection
   nix.gc = {
