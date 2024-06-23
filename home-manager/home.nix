@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ../modules/home-manager/apps/games.nix
+    ../modules/home-manager/apps/kitty.nix
+  ];
+
   home.username = "paul";
   home.homeDirectory = "/home/paul";
   nixpkgs.config.allowUnfree = true;
@@ -9,6 +14,7 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    #firefox
 
   ];
 
@@ -30,7 +36,6 @@
     syntaxHighlighting.enable = true;
     shellAliases = {
       ll = "ls -l";
-      ".." = "cd ..";
       update = "nix flake update";
       fupdate = "sudo nixos-rebuild switch --flake .";
       hupdate = "home-manager switch --flake .";
@@ -58,26 +63,6 @@
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;
-  };
-
-  # Gaming
-  # MangoHud
-  programs.mangohud = {
-    enable = true;
-    settings = {
-      legacy_layout=0;
-      horizontal = true;
-      gpu_stats = true;
-      cpu_stats = true;
-      cpu_power = true;
-      gpu_power = true;
-      ram = true;
-      fps = true;
-      frametime=0;
-      hud_no_margin = true;
-      table_columns=14;
-      frame_timing=1;
-    };
   };
 
   # Programming

@@ -138,18 +138,16 @@
     spotify
   ];
 
-  # List services that you want to enable:
+  hardware.opengl = {
+    driSupport = true;
+    driSupport32Bit = true;
+  };
+
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     gamescopeSession.enable = true;
-    # protontricks.enable = true;
-    };
-
-  hardware.opengl = {
-    driSupport = true;
-    driSupport32Bit = true;
   };
 
   # Install firefox.
