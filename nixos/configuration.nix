@@ -4,7 +4,7 @@
   imports =
     [
       ./hardware-configuration.nix
-      ../modules/home-manager/nixos/steam.nix
+      ../modules/nixos/steam.nix
     ];
 
   # Allow unfree packages
