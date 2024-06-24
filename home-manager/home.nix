@@ -6,6 +6,7 @@
     ../modules/home-manager/apps/games.nix
     ../modules/home-manager/apps/git.nix
     ../modules/home-manager/apps/kitty.nix
+    ../modules/home-manager/apps/nvim.nix
     ../modules/home-manager/apps/sh.nix
   ];
 
@@ -24,14 +25,6 @@
   home.sessionVariables = {
   };
 
-  # Editor
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-  };
-
-  # Extra
   programs.fastfetch = {
     enable = true;
   };

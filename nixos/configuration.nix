@@ -106,9 +106,8 @@
     zoom-us
     julia_19
     python3
-    git
   # Discord
-    discord-screenaudio
+    vesktop
   # VPN
     protonvpn-gui
     protonmail-desktop
@@ -119,6 +118,8 @@
     podman-desktop
   # Spotify
     spotify
+  # DAW
+    reaper
   ];
 
   # Garbage Collection
