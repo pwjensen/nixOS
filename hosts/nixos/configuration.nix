@@ -1,10 +1,12 @@
 { config, pkgs, ... }:
 
+let user = "paul";
+
 {
   imports =
     [
       ./hardware-configuration.nix
-      ../modules/nixos/steam.nix
+      ../../modules/nixos/system
     ];
 
   # Allow unfree packages
@@ -28,30 +30,27 @@
   time.timeZone = "America/New_York";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "en_US.UTF-8";
+      LC_IDENTIFICATION = "en_US.UTF-8";
+      LC_MEASUREMENT = "en_US.UTF-8";
+      LC_MONETARY = "en_US.UTF-8";
+      LC_NAME = "en_US.UTF-8";
+      LC_NUMERIC = "en_US.UTF-8";
+      LC_PAPER = "en_US.UTF-8";
+      LC_TELEPHONE = "en_US.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
   };
 
   # Virtualization
-  virtualisation.containers.enable = true;
   virtualisation = {
+    containers.enable = true;
     podman = {
       enable = true;
-
-      # Create a `docker` alias for podman, to use it as a drop-in replacement
       dockerCompat = true;
-
-      # Required for containers under podman-compose to be able to talk to each other.
       defaultNetwork.settings.dns_enabled = true;
     };
   };
@@ -83,14 +82,11 @@
     jack.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
   # User Account
-  users.users.paul = {
+  users.users.${user} = {
     isNormalUser = true;
-    description = "paul";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
     packages = with pkgs; [
       kdePackages.kate
     ];
@@ -125,9 +121,10 @@
   # Garbage Collection
   nix.gc = {
     automatic = true;
-    dates = "weekly";
+    interval = { Weekday = 0; Hour = 6; Minute = 0; };
     options = "--delete-older-than 7d";
   };
+
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 

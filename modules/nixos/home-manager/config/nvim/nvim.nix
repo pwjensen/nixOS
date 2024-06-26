@@ -1,9 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  programs.neovim = {
+  programs.neovim =
   let
-    toLua = str: "lua << EOF\n${str}\nEOF\n";
     toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
   in
   {
@@ -15,7 +14,6 @@
 
     extraPackages = with pkgs; [
       lua-language-server
-      rnix-lsp
 
       xclip
       wl-clipboard
@@ -30,7 +28,8 @@
 
       {
         plugin = comment-nvim;
-        config = toLua ''require("Comment").setup()'';
+        type = "lua";
+        config = ''require("Comment").setup()'';
       }
 
       {

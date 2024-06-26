@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  # Zsh
   programs.zsh = {
     enable = true;
     autocd = true;

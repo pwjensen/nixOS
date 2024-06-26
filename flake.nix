@@ -1,11 +1,17 @@
 {
 
-  description = "Home Flake";
+  description = "Flake";
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-24.05";
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    darwin = {
+      url = "github:LnL7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, ... } @ inputs:
@@ -28,7 +34,7 @@
         nixos = nixpkgs.lib.nixosSystem {
           specialArgs = {inherit inputs outputs;};
           modules = [
-            ./nixos/configuration.nix
+            ./hosts/nixos/configuration.nix
           ];
         };
       };
@@ -36,10 +42,41 @@
       # Home-Manager (Standalone)
       homeConfigurations = {
         paul = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          pkgs = nixpkgs.legacyPackages.${system};
           extraSpecialArgs = {inherit inputs outputs;};
           modules = [
-            ./home-manager/home.nix
+            ./modules/nixos/home.nix
+          ];
+        };
+      };
+
+      # Darwin (macOS)
+      darwinConfigurations = {
+        paul = nix-darwin.lib.darwinSystem {
+          extraSpecialArgs = {inherit inputs outputs;};
+          modules = [
+            mac-app-util.darwinModules.default
+            {
+              imports = [
+                ./hosts/darwin/configuration.nix
+                ./hosts/darwin/software.nix
+              ];
+              _module.args.self = self;
+            }
+            home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              users.users.paul = {
+                home = "/Users/paul";
+              };
+              home-manager.users.paul = {
+                imports = [
+                  mac-app-util.homeManagerModules.default
+                  ./hosts/darwin/home.nix
+                ];
+              };
+            }
           ];
         };
       };
