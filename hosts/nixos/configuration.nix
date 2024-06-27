@@ -1,12 +1,10 @@
 { config, pkgs, ... }:
 
-let user = "paul";
-
 {
   imports =
     [
       ./hardware-configuration.nix
-      ../../modules/nixos/system
+      ../../modules/system
     ];
 
   # Allow unfree packages
@@ -83,7 +81,7 @@ let user = "paul";
   };
 
   # User Account
-  users.users.${user} = {
+  users.users.paul = {
     isNormalUser = true;
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
@@ -94,7 +92,6 @@ let user = "paul";
 
   # Shell
   environment.shells = with pkgs; [ zsh ];
-  users.defaultUserShell = pkgs.zsh;
   programs.zsh.enable = true;
 
   environment.systemPackages = with pkgs; [
@@ -121,7 +118,7 @@ let user = "paul";
   # Garbage Collection
   nix.gc = {
     automatic = true;
-    interval = { Weekday = 0; Hour = 6; Minute = 0; };
+    dates = "daily";
     options = "--delete-older-than 7d";
   };
 
