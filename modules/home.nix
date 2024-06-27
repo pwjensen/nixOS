@@ -16,7 +16,6 @@
     packages = with pkgs; [
     ];
 
-    # Manages Dotfiles
     file = {
     };
 
