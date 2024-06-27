@@ -18,7 +18,6 @@
       # NixOS
       nixosConfigurations = {
         nixos = nixpkgs.lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
           modules = [
             ./hosts/nixos/configuration.nix
           ];
@@ -29,7 +28,6 @@
       homeConfigurations = {
         paul = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
-          extraSpecialArgs = {inherit inputs outputs;};
           modules = [
             ./modules/nixos/home.nix
           ];
