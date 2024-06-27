@@ -4,7 +4,7 @@
   imports =
     [
       ./hardware-configuration.nix
-      ../../modules/system/steam
+      ../../modules/system
     ];
 
   # Allow unfree packages
