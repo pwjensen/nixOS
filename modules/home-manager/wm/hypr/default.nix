@@ -1,41 +1,45 @@
 {
   imports = [
     ./hyprland-env.nix
-  ];
+    ./dunst
+    ./hyprpaper
+    ./waybar
+    ./wofi
 
-  home.packages = with pkgs; [
-    waybar
-    swww
   ];
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = pkgs.hyprland;
-    xwayland.enable = true;
-    extraConfig =
+  };
+
+  xdg.configFile."hypr/hyprland.conf".enable = false;
+
+  home.file.".config/hypr/hyprland.conf".text =
     ''
       # Monitor
-      monitor=DP-1,1920x1080@165,auto,1
-
-      # Fix slow startup
-      exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-      exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      monitor=DP-1,1920x1080@240,1920x0,1
+      monitor=HDMI-A-1,1920x1080@60,0x0,1
 
       # Autostart
-
-      exec-once = hyprctl setcursor Bibata-Modern-Classic 24
+      exec-once = waybar
+      exec-once = hyprpaper
       exec-once = dunst
+      exec-once=/usr/lib/polkit-kde-authentication-agent-1
 
-      source = /home/enzo/.config/hypr/colors
-      exec = pkill waybar & sleep 0.5 && waybar
-      exec-once = swww init & sleep 0.5 && exec wallpaper_random
-      # exec-once = wallpaper_random
+      # Source a file (multi-file configs)
+      source = ~/.config/hypr/colors
 
-      # Set en layout at startup
+      # Set programs that you use
+      $terminal = kitty
+      $fileManager = thunar
+      $menu = wofi --show drun
 
-      # Input config
+      # Some default env vars.
+      env = XCURSOR_SIZE,24
+      env = QT_QPA_PLATFORMTHEME,qt5ct # change to qt6ct if you have that
+
       input {
-          kb_layout = br,us
+          kb_layout = us
           kb_variant =
           kb_model =
           kb_options =
@@ -47,27 +51,31 @@
               natural_scroll = false
           }
 
-          sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
+          sensitivity = 0
       }
 
       general {
 
           gaps_in = 5
-          gaps_out = 20
+          gaps_out = 10
           border_size = 2
           col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
           col.inactive_border = rgba(595959aa)
 
           layout = dwindle
+          allow_tearing = false
       }
 
       decoration {
 
           rounding = 10
-          blur = true
-          blur_size = 3
-          blur_passes = 1
-          blur_new_optimizations = true
+
+          blur {
+              enabled = true
+              size = 3
+              passes = 1
+              new_optimizations = true
+          }
 
           drop_shadow = true
           shadow_range = 4
@@ -78,13 +86,14 @@
       animations {
           enabled = yes
 
-          bezier = ease,0.4,0.02,0.21,1
+          bezier = myBezier, 0.05, 0.9, 0.1, 1.05
 
-          animation = windows, 1, 3.5, ease, slide
-          animation = windowsOut, 1, 3.5, ease, slide
-          animation = border, 1, 6, default
-          animation = fade, 1, 3, ease
-          animation = workspaces, 1, 3.5, ease
+          animation = windows, 1, 7, myBezier
+          animation = windowsOut, 1, 7, default, popin 80%
+          animation = border, 1, 10, default
+          animation = borderangle, 1, 8, default
+          animation = fade, 1, 7, default
+          animation = workspaces, 1, 6, default
       }
 
       dwindle {
@@ -93,64 +102,38 @@
       }
 
       master {
-          new_is_master = yes
+          new_is_master = true
       }
 
       gestures {
           workspace_swipe = false
       }
 
+      misc {
+          force_default_wallpaper = -1 # Set to 0 or 1 to disable the anime mascot wallpapers
+      }
+
+
       # Example windowrule v1
       # windowrule = float, ^(kitty)$
       # Example windowrule v2
       # windowrulev2 = float,class:^(kitty)$,title:^(kitty)$
+      # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
+      windowrulev2 = suppressevent maximize, class:.* # You'll probably like this.
 
-      windowrule=float,^(kitty)$
-      windowrule=float,^(pavucontrol)$
-      windowrule=center,^(kitty)$
-      windowrule=float,^(blueman-manager)$
-      windowrule=size 600 500,^(kitty)$
-      windowrule=size 934 525,^(mpv)$
-      windowrule=float,^(mpv)$
-      windowrule=center,^(mpv)$
-      #windowrule=pin,^(firefox)$
 
+      # See https://wiki.hyprland.org/Configuring/Keywords/ for more
       $mainMod = SUPER
-      bind = $mainMod, G, fullscreen,
 
-
-      #bind = $mainMod, RETURN, exec, cool-retro-term-zsh
-      bind = $mainMod, RETURN, exec, kitty
-      bind = $mainMod, B, exec, opera --no-sandbox
-      bind = $mainMod, L, exec, firefox
+      # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
+      bind = $mainMod, RETURN, exec, $terminal
       bind = $mainMod, Q, killactive,
       bind = $mainMod, M, exit,
-      bind = $mainMod, F, exec, nautilus
+      bind = $mainMod, F, exec, $fileManager
       bind = $mainMod, V, togglefloating,
-      bind = $mainMod, w, exec, wofi --show drun
-      bind = $mainMod, R, exec, rofiWindow
+      bind = $mainMod CTRL, RETURN, exec, $menu
       bind = $mainMod, P, pseudo, # dwindle
       bind = $mainMod, J, togglesplit, # dwindle
-
-      # Switch Keyboard Layouts
-      bind = $mainMod, SPACE, exec, hyprctl switchxkblayout teclado-gamer-husky-blizzard next
-
-      bind = , Print, exec, grim -g "$(slurp)" - | wl-copy
-      bind = SHIFT, Print, exec, grim -g "$(slurp)"
-
-      # Functional keybinds
-      bind =,XF86AudioMicMute,exec,pamixer --default-source -t
-      bind =,XF86MonBrightnessDown,exec,light -U 20
-      bind =,XF86MonBrightnessUp,exec,light -A 20
-      bind =,XF86AudioMute,exec,pamixer -t
-      bind =,XF86AudioLowerVolume,exec,pamixer -d 10
-      bind =,XF86AudioRaiseVolume,exec,pamixer -i 10
-      bind =,XF86AudioPlay,exec,playerctl play-pause
-      bind =,XF86AudioPause,exec,playerctl play-pause
-
-      # to switch between windows in a floating workspace
-      bind = SUPER,Tab,cyclenext,
-      bind = SUPER,Tab,bringactivetotop,
 
       # Move focus with mainMod + arrow keys
       bind = $mainMod, left, movefocus, l
@@ -182,6 +165,10 @@
       bind = $mainMod SHIFT, 9, movetoworkspace, 9
       bind = $mainMod SHIFT, 0, movetoworkspace, 10
 
+      # Example special workspace (scratchpad)
+      bind = $mainMod, S, togglespecialworkspace, magic
+      bind = $mainMod SHIFT, S, movetoworkspace, special:magic
+
       # Scroll through existing workspaces with mainMod + scroll
       bind = $mainMod, mouse_down, workspace, e+1
       bind = $mainMod, mouse_up, workspace, e-1
@@ -189,9 +176,7 @@
       # Move/resize windows with mainMod + LMB/RMB and dragging
       bindm = $mainMod, mouse:272, movewindow
       bindm = $mainMod, mouse:273, resizewindow
-      bindm = ALT, mouse:272, resizewindow
     '';
-  };
 
   home.file.".config/hypr/colors".text =
   ''

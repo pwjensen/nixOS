@@ -61,10 +61,6 @@
     };
   };
 
-  # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -111,6 +107,15 @@
     options = "--delete-older-than 7d";
   };
 
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs;[ xdg-desktop-portal-gtk xdg-desktop-portal-hyprland];
+    config.preferred.default = ["hyprland" "gtk"];
+    xdgOpenUsePortal = true;
+  };
+
+  hardware.cpu.amd.updateMicrocode = true;
+
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
@@ -120,7 +125,7 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.05";
 
   # Enable Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

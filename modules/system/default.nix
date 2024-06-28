@@ -11,5 +11,7 @@
     ./virtualization
     # WM
     ./wm/hypr
+    # FileExplorer
+    ./thunar # Hyprland
   ];
 }

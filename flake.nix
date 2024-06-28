@@ -30,10 +30,9 @@
         paul = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
           modules = [
-            ./modules/nixos/home.nix
+            ./modules/home.nix
           ];
         };
       };
     };
 }
-
